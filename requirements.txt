@@ -1,0 +1,7 @@
+numpy
+PyYAML
+pandas
+matplotlib
+psutil
+faiss-cpu
+hnswlib

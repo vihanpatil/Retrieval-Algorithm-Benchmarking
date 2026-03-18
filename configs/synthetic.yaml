@@ -1,0 +1,58 @@
+seed: 123
+
+dataset:
+  kind: synthetic
+  name: synthetic_gaussian_norm
+  n_base: 50000
+  n_query: 1000
+  n_train: 20000
+  dim: 384
+  metric: ip
+  normalize: true
+
+ground_truth:
+  cache_path: artifacts/ground_truth/synthetic_k10.npz
+
+runtime:
+  k: 10
+  warmup_queries: 200
+  faiss_threads: 1
+
+output:
+  results_jsonl: artifacts/results/results.jsonl
+
+indexes:
+  - name: faiss_flat
+    build_grid: {}
+    runtime_grid: {}
+
+  - name: faiss_hnsw
+    build_grid:
+      M: [16, 32]
+      ef_construction: [128, 256]
+    runtime_grid:
+      ef_search: [32, 64, 128, 256]
+
+  - name: hnswlib
+    build_grid:
+      M: [16, 32]
+      ef_construction: [128, 256]
+    runtime_grid:
+      ef: [32, 64, 128, 256]
+
+  - name: faiss_ivfpq
+    build_grid:
+      nlist: [512, 1024]
+      pq_m: [16, 32]
+      pq_nbits: [6, 8]
+    runtime_grid:
+      nprobe: [4, 8, 16, 32, 64]
+
+  - name: faiss_opq_ivfpq_factory
+    build_grid:
+      factory:
+        - OPQ16_64,IVF1024,PQ16x8
+        - OPQ32_128,IVF2048,PQ32x8
+    runtime_grid:
+      nprobe: [8, 16, 32, 64]
+

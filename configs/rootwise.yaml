@@ -1,0 +1,50 @@
+seed: 123
+
+dataset:
+  kind: numpy
+  name: rootwise
+  xb_path: /Users/vihanpatil/school/captsone/RootWise-2.0/evaluation/faiss_bench_data/rootwise/xb.npy
+  xq_path: /Users/vihanpatil/school/captsone/RootWise-2.0/evaluation/faiss_bench_data/rootwise/xq.npy
+  xtrain_path: /Users/vihanpatil/school/captsone/RootWise-2.0/evaluation/faiss_bench_data/rootwise/xtrain.npy
+  metric: ip
+  normalize: true
+
+ground_truth:
+  cache_path: artifacts/ground_truth/rootwise_k10.npz
+
+runtime:
+  k: 10
+  warmup_queries: 500
+  faiss_threads: 1
+
+output:
+  results_jsonl: artifacts/results/rootwise_results.jsonl
+
+indexes:
+  - name: faiss_flat
+    build_grid: {}
+    runtime_grid: {}
+
+  - name: faiss_hnsw
+    build_grid:
+      M: [8, 16, 32, 48, 64]
+      ef_construction: [64, 128, 256, 400]
+    runtime_grid:
+      ef_search: [16, 32, 64, 128, 256, 512]
+
+  - name: hnswlib
+    build_grid:
+      M: [8, 16, 32, 48, 64]
+      ef_construction: [64, 128, 256, 400]
+      num_threads: [1]
+    runtime_grid:
+      ef: [16, 32, 64, 128, 256, 512]
+      num_threads: [1]
+
+  - name: faiss_ivfpq
+    build_grid:
+      nlist: [4, 8, 16]
+      pq_m: [8, 16]
+      pq_nbits: [4]
+    runtime_grid:
+      nprobe: [1, 2, 4, 8, 16]
